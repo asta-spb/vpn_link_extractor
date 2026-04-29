@@ -1,74 +1,71 @@
 # VPN Link Extractor
 
-Windows desktop tool that extracts `vless://` links and XRay configs from a Happ-style subscription URL.
+Десктопная утилита для Windows, которая извлекает ссылки `vless://` и XRay-конфиги из подписки в формате Happ.
 
-WinForms, .NET 10. Dark theme, single window.
+## Возможности
 
-## Features
+- Загружает подписки в формате Happ (отправляет нужный `User-Agent`, чтобы получить JSON-набор конфигов).
+- Собирает стандартные URI `vless://` из исходящих XRay-конфигов — поддержка TCP, Reality, TLS, WebSocket, gRPC.
+- Список серверов с множественным выбором и кнопками `Copy links` / `Save links…` / `Save configs…` (действуют на выделенные строки, либо на весь список, если ничего не выделено).
+- Опциональная панель `Show JSON Config` — показывает исходный XRay JSON для выбранной записи; remarks декодируются в читаемый вид.
+- Запоминает до 10 последних URL (переключатель `Remember URLs`).
+- Сохраняет размер, положение и состояние окна (развёрнуто/нет) между запусками в `settings.json` рядом с исполняемым файлом.
+- Нативный тёмный заголовок окна на Windows 10/11.
+- Защита от сюрпризов: лимит ответа 10 МБ, разрешены только схемы http/https, атомарная запись настроек, безопасный разбор JSON по каждой записи.
 
-- Fetches Happ-style subscriptions (sends the proper `User-Agent` to receive the JSON config bundle).
-- Builds standard `vless://` URIs from XRay outbound configs — supports TCP, Reality, TLS, WebSocket, gRPC.
-- Falls back to base64-encoded and plain-text subscription formats.
-- Multi-select list of servers with `Copy links` / `Save links…` / `Save configs…` (operates on selection if any, otherwise on the full list).
-- Optional `Show JSON Config` panel — inspects the underlying XRay JSON for the selected entry; remarks are decoded to readable form.
-- Remembers up to 10 last URLs (toggleable via `Remember URLs`).
-- Persists window size, position and maximized state across launches in `settings.json` next to the executable.
-- Native dark title bar on Windows 10/11.
-- Defensive: 10 MB response cap, http/https-only schemes, atomic settings write, safe JSON parsing per entry.
+## Требования
 
-## Requirements
+- Windows 10 1809+ или Windows 11
+- [.NET 10 SDK](https://dotnet.microsoft.com/download) для сборки (или .NET 10 Runtime для framework-dependent сборки)
 
-- Windows 10 1809+ or Windows 11
-- [.NET 10 SDK](https://dotnet.microsoft.com/download) to build (or .NET 10 Runtime if running a framework-dependent build)
-
-## Build
+## Сборка
 
 ```bash
 dotnet build -c Release
 ```
 
-Output: `bin/Release/net10.0-windows/VpnLinkExtractor.exe`.
+Результат: `bin/Release/net10.0-windows/VpnLinkExtractor.exe`.
 
-## Publish (single-file `.exe`)
+## Публикация (одиночный `.exe`)
 
 ```bash
 dotnet publish -c Release -r win-x64 --self-contained true -p:PublishSingleFile=true -p:IncludeNativeLibrariesForSelfExtract=true
 ```
 
-Result: `bin/Release/net10.0-windows/win-x64/publish/VpnLinkExtractor.exe` — single self-contained executable, no .NET runtime required on the target.
+Результат: `bin/Release/net10.0-windows/win-x64/publish/VpnLinkExtractor.exe` — один самодостаточный исполняемый файл, .NET runtime на целевой машине не требуется.
 
-For a smaller framework-dependent build use `--self-contained false`.
+Для меньшего по размеру framework-dependent билда используйте `--self-contained false`.
 
-## Usage
+## Использование
 
-1. Paste a Happ subscription URL (e.g. `https://example.com/connection/subs/<token>`).
-2. Press **Fetch**.
-3. Select one or more entries (Ctrl/Shift-click) and use **Copy links**, **Save links…** or **Save configs…**.
-4. Toggle **Show JSON Config** to view the underlying XRay config for the selected entry.
+1. Вставьте URL подписки Happ (например, `https://example.com/connection/subs/<token>`).
+2. Нажмите **Fetch**.
+3. Выберите одну или несколько записей (Ctrl/Shift-клик) и используйте **Copy links**, **Save links…** или **Save configs…**.
+4. Включите **Show JSON Config**, чтобы увидеть исходный XRay-конфиг выбранной записи.
 
-When **Remember URLs** is on, successfully fetched URLs are saved to the dropdown for next time.
+Если включён **Remember URLs**, успешно загруженные URL сохраняются в выпадающий список для повторного использования.
 
-## Project layout
+## Структура проекта
 
-| File | Purpose |
+| Файл | Назначение |
 |---|---|
-| `Program.cs` | Entry point + `--test`/`--dump-config` CLI debug modes |
-| `MainForm.cs` | Main window, all UI and action handlers |
-| `AboutForm.cs` | About dialog with project links |
-| `SubscriptionFetcher.cs` | HTTP fetch, JSON / base64 / plain-text parsing, VLESS URI builder |
-| `VpnEntry.cs` | Result record (remarks, vless URI, config JSON) |
-| `AppSettings.cs` | JSON-backed persisted settings |
-| `WindowGeometry.cs` | Persisted window state |
-| `Theme.cs` | Color palette and fonts |
-| `FlatBtn.cs` | Custom themed Button |
-| `DarkTitleBar.cs` | DWM dark title bar interop |
-| `app.ico` | Application icon (multi-resolution) |
+| `Program.cs` | Точка входа + отладочные CLI-режимы `--test` / `--dump-config` |
+| `MainForm.cs` | Главное окно, весь UI и обработчики действий |
+| `AboutForm.cs` | Диалог «О программе» со ссылками |
+| `SubscriptionFetcher.cs` | HTTP-запрос, разбор JSON / base64 / plain-text, сборка URI VLESS |
+| `VpnEntry.cs` | Запись результата (remarks, URI vless, JSON конфига) |
+| `AppSettings.cs` | Настройки, сохраняемые в JSON |
+| `WindowGeometry.cs` | Сохраняемое состояние окна |
+| `Theme.cs` | Палитра цветов и шрифты |
+| `FlatBtn.cs` | Кастомная кнопка в стиле темы |
+| `DarkTitleBar.cs` | Interop для тёмного заголовка через DWM |
+| `app.ico` | Иконка приложения (мультиразрешение) |
 
-## License
+## Лицензия
 
-MIT — see [LICENSE](LICENSE).
+MIT — см. [LICENSE](LICENSE).
 
-## Links
+## Ссылки
 
-- Community: [t.me/nastya_chtoto_delaet](https://t.me/nastya_chtoto_delaet)
-- Author: [t.me/anastasia98](https://t.me/anastasia98)
+- Сообщество: [t.me/nastya_chtoto_delaet](https://t.me/nastya_chtoto_delaet)
+- Автор: [t.me/anastasia98](https://t.me/anastasia98)
