@@ -1,0 +1,31 @@
+# .NET build outputs
+bin/
+obj/
+
+# IDE / editor
+.vs/
+.vscode/
+.idea/
+*.suo
+*.user
+*.userosscache
+*.sln.iml
+
+# Rider / ReSharper
+_ReSharper.Caches/
+*.DotSettings.user
+
+# OS
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Logs / temp
+*.log
+*.tmp
+
+# App runtime data (created next to .exe)
+settings.json
+
+# Publish output (when using -o publish)
+publish/

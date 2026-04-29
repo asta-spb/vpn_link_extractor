@@ -1,0 +1,30 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <TargetFramework>net10.0-windows</TargetFramework>
+    <UseWindowsForms>true</UseWindowsForms>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <ApplicationIcon>app.ico</ApplicationIcon>
+    <RootNamespace>VpnLinkExtractor</RootNamespace>
+    <AssemblyName>VpnLinkExtractor</AssemblyName>
+    <LangVersion>latest</LangVersion>
+    <NeutralLanguage>en</NeutralLanguage>
+
+    <Version>1.0.0</Version>
+    <Title>VPN Link Extractor</Title>
+    <Authors>asta-spb</Authors>
+    <Company>asta-spb</Company>
+    <Product>VPN Link Extractor</Product>
+    <AssemblyTitle>VPN Link Extractor</AssemblyTitle>
+    <Description>Extract VLESS links and XRay configs from a Happ-style subscription URL.</Description>
+    <Copyright>Copyright © 2026 asta-spb</Copyright>
+    <PackageProjectUrl>https://github.com/asta-spb/vpn_link_extractor</PackageProjectUrl>
+    <RepositoryUrl>https://github.com/asta-spb/vpn_link_extractor</RepositoryUrl>
+    <RepositoryType>git</RepositoryType>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Include="app.ico" />
+  </ItemGroup>
+</Project>
